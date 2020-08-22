@@ -33,12 +33,14 @@ case 'valideConnexion':
         include 'vues/v_erreurs.php';
         include 'vues/v_connexion.php';
     } elseif (is_array($visiteur)) {
+        $_SESSION['typeProfil'] = 'Visiteur';
         $id = $visiteur['id'];
         $nom = $visiteur['nom'];
         $prenom = $visiteur['prenom'];
         connecter($id, $nom, $prenom);
         header('Location: index.php');
     } elseif (is_array($comptable)) {
+        $_SESSION['typeProfil'] = 'Comptable';
         $id = $comptable['id'];
         $nom = $comptable['nom'];
         $prenom = $comptable['prenom'];
