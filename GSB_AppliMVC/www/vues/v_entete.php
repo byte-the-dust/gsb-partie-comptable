@@ -50,7 +50,9 @@
                                 </a>
                             </li>
                             <!-- Affichage personnalisé profil "Visiteur" -->
-                            <?php if ($_SESSION['typeProfil'] == 'Visiteur') { ?>                          
+                                <?php 
+                                if ($_SESSION['typeProfil'] == 'Visiteur') { 
+                                    ?>                            
                                 <li <?php if ($uc == 'gererFrais') { ?>class="active"<?php } ?>>
                                     <a href="index.php?uc=gererFrais&action=saisirFrais">
                                         <span class="glyphicon glyphicon-pencil"></span>
@@ -64,7 +66,9 @@
                                     </a>
                                 </li>
                             <!-- Affichage personnalisé profil "Comptable" -->    
-                            <?php } elseif ($_SESSION['typeProfil'] == 'Comptable') { ?>
+                                <?php 
+                                } elseif ($_SESSION['typeProfil'] == 'Comptable') { 
+                                    ?>
                                 <li <?php if ($uc == 'validerFrais') { ?>class="active"<?php } ?>>
                                     <a href="index.php?uc=validerFrais&action=saisirFrais">
                                         <span class="glyphicon glyphicon-ok"></span>
@@ -77,7 +81,9 @@
                                         Suivre le paiement des fiches de frais
                                     </a>
                                 </li>
-                            <?php } ?>
+                                    <?php 
+                                } 
+                                ?>
                             <li 
                             <?php if ($uc == 'deconnexion') { ?>class="active"<?php } ?>>
                                 <a href="index.php?uc=deconnexion&action=demandeDeconnexion">

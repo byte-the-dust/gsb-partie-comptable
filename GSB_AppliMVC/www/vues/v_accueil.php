@@ -34,7 +34,9 @@
                 <div class="row">
                     <div class="col-xs-12 col-md-12">
                         <!-- Affichage personnalisé profil "Visiteur" -->
-                        <?php if ($_SESSION['typeProfil'] == 'Visiteur') { ?>                        
+                        <?php 
+                        if ($_SESSION['typeProfil'] == 'Visiteur') { 
+                            ?>                        
                         <a href="index.php?uc=gererFrais&action=saisirFrais"
                            class="btn btn-success btn-lg" role="button">
                             <span class="glyphicon glyphicon-pencil"></span>
@@ -44,7 +46,9 @@
                             <span class="glyphicon glyphicon-list-alt"></span>
                             <br>Afficher mes fiches de frais</a>
                         <!-- Affichage personnalisé profil "Comptable" -->
-                        <?php } elseif ($_SESSION['typeProfil'] == 'Comptable') { ?>
+                        <?php                        
+                        } elseif ($_SESSION['typeProfil'] == 'Comptable') { 
+                            ?>
                             <a href="index.php?uc=validerFrais&action=selectionnerMois"
                                class="btn btn-primary btn-lg" role="button">
                                 <span class="glyphicon glyphicon-ok"></span>
@@ -53,7 +57,9 @@
                                class="btn btn-primary btn-lg" role="button">
                                 <span class="glyphicon glyphicon-euro"></span>
                                 <br>Suivre le paiement des fiches de frais</a>
-                        <?php } ?>
+                                <?php                                 
+                        } 
+                        ?>
                     </div>
                 </div>
             </div>
