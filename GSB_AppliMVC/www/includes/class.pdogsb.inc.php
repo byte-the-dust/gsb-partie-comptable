@@ -103,6 +103,28 @@ class PdoGsb
         $requetePrepare->execute();
         return $requetePrepare->fetch();
     }
+    
+     /**
+     * Retourne les informations d'un comptable
+     *
+     * @param String $login Login du comptable
+     * @param String $mdp   Mot de passe du comptable
+     *
+     * @return l'id, le nom et le prénom sous la forme d'un tableau associatif
+     */
+    public function getInfosComptable($login, $mdp)
+    {
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'SELECT comptable.id AS id, comptable.nom AS nom, '
+            . 'comptable.prenom AS prenom '
+            . 'FROM comptable '
+            . 'WHERE comptable.login = :unLogin AND comptable.mdp = :unMdp'
+        );
+        $requetePrepare->bindParam(':unLogin', $login, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMdp', $mdp, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        return $requetePrepare->fetch();
+    }
 
     /**
      * Retourne sous forme d'un tableau associatif toutes les lignes de frais
@@ -486,4 +508,64 @@ class PdoGsb
         $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
         $requetePrepare->execute();
     }
+    
+    /**
+     * Retourne la liste des visiteurs qui ont saisi des fiches au cours du mois concerné
+     *
+     * @param String $moisSelectionne au format  aaaamm
+     * 
+     * @return une liste de visiteurs
+     */
+    public function getListeVisiteur($moisSelectionne)
+    {
+        $requetePrepare = PdoGsb::$monPdo->prepare(
+            'SELECT visiteur.nom, visiteur.prenom '
+            . 'FROM visiteur '
+            . 'JOIN fichefrais ON visiteur.id = fichefrais.idvisiteur '
+            . 'WHERE fichefrais.mois = :unMois '
+            . 'GROUP BY visiteur.nom '    
+            . 'ORDER BY visiteur.nom ASC'
+        );
+        $requetePrepare->bindParam(':unMois', $moisSelectionne, PDO::PARAM_STR);
+        $requetePrepare->execute();
+        $lesVisiteurs = array();
+        while ($laLigne = $requetePrepare->fetch()){
+            $nom = $laLigne['nom'];
+            $prenom = $laLigne['prenom'];
+            $lesVisiteurs[] = array(
+                'nom' => $nom,
+                'prenom' => $prenom
+            );
+        }
+        return $lesVisiteurs;
+    }
+    
+    /**
+     * Retourne la liste des mois pour lesquels il existe des fiches non validées ni remboursées
+     *
+     * @return un tableau de mois
+     */
+    public function getListeMoisValidation()
+    {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'SELECT fichefrais.mois, fichefrais.idetat '
+            . 'FROM fichefrais '
+            . "WHERE idetat IN ('CL', 'CR') "
+            . 'GROUP BY mois '
+            . 'ORDER BY mois DESC'
+        );
+        $requetePrepare->execute();
+        $lesMois = array();
+        while ($laLigne = $requetePrepare->fetch()) {
+            $mois = $laLigne['mois'];
+            $numAnnee = substr($mois, 0, 4);
+            $numMois = substr($mois, 4, 2);
+            $lesMois[] = array(
+                'mois' => $mois,
+                'numAnnee' => $numAnnee,
+                'numMois' => $numMois
+            );
+        }
+        return $lesMois;
+    }    
 }
