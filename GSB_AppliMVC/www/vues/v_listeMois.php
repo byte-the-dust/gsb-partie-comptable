@@ -14,14 +14,41 @@
  * @link      http://www.reseaucerta.org Contexte « Laboratoire GSB »
  */
 ?>
+<?php
+// Visiteur
+if ($_SESSION['typeProfil'] == 'Visiteur') {
+    ?>
 <h2>Mes fiches de frais</h2>
+    <?php
+} 
+?>
 <div class="row">
     <div class="col-md-4">
+        <?php
+        // Visiteur
+        if ($_SESSION['typeProfil'] == 'Visiteur') {
+            ?>
         <h3>Sélectionner un mois : </h3>
+            <?php  
+        } 
+        ?>
     </div>
     <div class="col-md-4">
+        <?php
+        // Visiteur
+        if ($_SESSION['typeProfil'] == 'Visiteur') { 
+            ?>
         <form action="index.php?uc=etatFrais&action=voirEtatFrais" 
               method="post" role="form">
+            <?php
+        // Comptable
+        } elseif ($_SESSION['typeProfil'] == 'Comptable') {
+            ?>
+            <form action="index.php?uc=validerFrais&action=selectionnerMois" 
+                  method="post" role="form">            
+            <?php
+        }
+        ?>
             <div class="form-group">
                 <label for="lstMois" accesskey="n">Mois : </label>
                 <select id="lstMois" name="lstMois" class="form-control">

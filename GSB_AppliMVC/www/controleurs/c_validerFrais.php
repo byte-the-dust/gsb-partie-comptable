@@ -8,7 +8,7 @@ $moisASelectionner;
 $visiteurASelectionner;
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 switch ($action) {
-// Sélection du mois et du visiteur    
+// Sélection du mois et du visiteur  
 case 'selectionnerMois':
     $lesMois = $pdo->getListeMoisValidation();
     // Afin de sélectionner par défaut le dernier mois dans la zone de liste
