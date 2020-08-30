@@ -15,14 +15,35 @@
  */
 ?>
 <div class="row">    
+<?php
+// Visiteur
+if ($_SESSION['typeProfil'] == 'Visiteur') {
+    ?>
     <h2>Renseigner ma fiche de frais du mois 
         <?php echo $numMois . '-' . $numAnnee ?>
     </h2>
+    <?php
+} 
+?>    
     <h3>Eléments forfaitisés</h3>
     <div class="col-md-4">
+    <?php 
+    // Visiteur
+    if ($_SESSION['typeProfil'] == 'Visiteur') {
+        ?>      
         <form method="post" 
               action="index.php?uc=gererFrais&action=validerMajFraisForfait" 
               role="form">
+    <?php
+    // Comptable
+    } elseif ($_SESSION['typeProfil'] == 'Comptable') {
+        ?>
+        <form name="fraisForfait" method="post" 
+        action="index.php?uc=validerFrais&action=corrigerFraisForfait" 
+        role="form">
+        <?php
+    }
+    ?>
             <fieldset>       
                 <?php
                 foreach ($lesFraisForfait as $unFrais) {
@@ -39,9 +60,20 @@
                     </div>
                     <?php
                 }
+                // Visiteur
+                if ($_SESSION['typeProfil'] == 'Visiteur') {
                 ?>
-                <button class="btn btn-success" type="submit">Ajouter</button>
-                <button class="btn btn-danger" type="reset">Effacer</button>
+                    <button class="btn btn-success" type="submit">Ajouter</button>
+                    <button class="btn btn-danger" type="reset">Effacer</button>
+                    <?php
+                // Comptable
+                } elseif ($_SESSION['typeProfil'] == 'Comptable') {
+                    ?>
+                    <button class="btn btn-success" type="submit">Corriger</button>
+                    <button class="btn btn-danger" type="reset">Réinitialiser</button> 
+                    <?php                                  
+                }
+                ?>
             </fieldset>
         </form>
     </div>
