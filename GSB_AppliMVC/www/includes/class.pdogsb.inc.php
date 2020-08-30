@@ -519,7 +519,7 @@ class PdoGsb
     public function getListeVisiteur($moisSelectionne)
     {
         $requetePrepare = PdoGsb::$monPdo->prepare(
-            'SELECT visiteur.nom, visiteur.prenom '
+            'SELECT visiteur.id, visiteur.nom, visiteur.prenom '
             . 'FROM visiteur '
             . 'JOIN fichefrais ON visiteur.id = fichefrais.idvisiteur '
             . 'WHERE fichefrais.mois = :unMois '
@@ -530,9 +530,11 @@ class PdoGsb
         $requetePrepare->execute();
         $lesVisiteurs = array();
         while ($laLigne = $requetePrepare->fetch()){
+            $id = $laLigne['id'];
             $nom = $laLigne['nom'];
             $prenom = $laLigne['prenom'];
             $lesVisiteurs[] = array(
+                'id' => $id,
                 'nom' => $nom,
                 'prenom' => $prenom
             );
