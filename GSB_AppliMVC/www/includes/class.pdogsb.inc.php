@@ -255,6 +255,33 @@ class PdoGsb
     }
 
     /**
+     * Met à jour une ligne de la table ligneFraisHorsForfait
+     *
+     * @param String $id         ID de la ligne de frais
+     * @param String $date       Date du frais au format français jj//mm/aaaa
+     * @param String $libelle    Libellé du frais
+     * @param Float  $montant    Montant du frais
+     *
+     * @return null
+     */
+    public function majFraisHorsForfait($id, $date, $libelle, $montant)
+    {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'UPDATE lignefraishorsforfait '
+            . 'SET lignefraishorsforfait.date = :date '
+            . 'SET lignefraishorsforfait.libelle = :libelle '    
+            . 'SET lignefraishorsforfait.montant = :montant '                
+            . 'WHERE lignefraishorsforfait.id = :id '
+        );            
+        $requetePrepare->bindParam(':id', $id, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':date', $date, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':libelle', $libelle, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':montant', $montant, PDO::PARAM_INT);
+        $requetePrepare->execute();
+        
+    }
+    
+    /**
      * Met à jour le nombre de justificatifs de la table ficheFrais
      * pour le mois et le visiteur concerné
      *
@@ -405,6 +432,27 @@ class PdoGsb
         $requetePrepare->bindParam(':uneDateFr', $dateFr, PDO::PARAM_STR);
         $requetePrepare->bindParam(':unMontant', $montant, PDO::PARAM_INT);
         $requetePrepare->execute();
+    }
+
+    /**
+     * Supprime les frais forfaitisés du visiteur sélectionné pour le mois concerné
+     * 
+     * @param String $idVisiteur ID du visiteur
+     * @param String $mois       Mois sous la forme aaaamm
+     * 
+     * @return null
+     */
+    public function supprimerFraisForfait($idVisiteur, $mois)
+    {
+        $requetePrepare = PdoGSB::$monPdo->prepare(
+            'DELETE * lignefraisforfait '
+            . 'FROM lignefraisforfait '
+            . 'WHERE lignefraisforfait.idvisiteur = :unIdVisiteur '
+            . 'AND lignefraisforfait.mois = :unMois '                
+        );
+        $requetePrepare->bindParam(':unIdVisiteur', $idVisiteur, PDO::PARAM_STR);
+        $requetePrepare->bindParam(':unMois', $mois, PDO::PARAM_STR);
+        $requetePrepare->execute();        
     }
 
     /**
