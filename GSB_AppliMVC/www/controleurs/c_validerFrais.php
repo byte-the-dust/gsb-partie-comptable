@@ -8,7 +8,7 @@ $moisASelectionner;
 $visiteurASelectionner;
 $action = filter_input(INPUT_GET, 'action', FILTER_SANITIZE_STRING);
 switch ($action) {
-// Sélection du mois et du visiteur  
+// Sélection du mois et du visiteur    
 case 'selectionnerMois':
     $lesMois = $pdo->getListeMoisValidation();
     // Afin de sélectionner par défaut le dernier mois dans la zone de liste
@@ -31,7 +31,7 @@ case 'voirDetailFrais':
         $moisASelectionner = $idMois;
     } else {
        $moisASelectionner = $_COOKIE['mois'];
-}
+    } 
     
     // Liste des visiteurs sélectionnables
     $lesVisiteurs = $pdo->getListeVisiteur($lesMois[0]['mois']);    
@@ -64,11 +64,63 @@ case 'corrigerFraisForfait':
     } else {
         ajouterErreur('Les valeurs des frais doivent être numériques');
         include 'vues/v_erreurs.php';
-    } 
-
+    }
+    
+    $lesFraisForfait = $pdo->getLesFraisForfait($visiteurASelectionner, $moisASelectionner);
+    $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($visiteurASelectionner, $moisASelectionner);    
+    include 'vues/v_listeVisiteurMois.php';
+    include 'vues/v_listeFraisForfait.php';    
+    include 'vues/v_validFraisHorsForfait.php';
     break;
+
+// Correction des frais hors forfait
+case 'corrigerFraisHorsForfait':
+    $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_STRING);
+    $date = filter_input(INPUT_POST, 'date', FILTER_SANITIZE_STRING);
+    $libelle = filter_input(INPUT_POST, 'libelle', FILTER_SANITIZE_STRING);
+    $montant = filter_input(INPUT_POST, 'montant', FILTER_VALIDATE_FLOAT);
+    valideInfosFrais($date, $libelle, $montant);
+    if (nbErreurs() != 0) {
+        include 'vues/v_erreurs.php';
+    } else {
+        $pdo->majFraisHorsForfait($id, $date, $libelle, $montant);
+    }
+    $lesFraisForfait = $pdo->getLesFraisForfait($visiteurASelectionner, $moisASelectionner);
+    $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($visiteurASelectionner, $moisASelectionner);  
+    include 'vues/v_listeVisiteurMois.php';
+    include 'vues/v_listeFraisForfait.php';    
+    include 'vues/v_validFraisHorsForfait.php';
+    break;
+
+// Suppression des frais forfaitisés
+case 'supprimerFraisForfait':
+    $lesMois = $pdo->getListeMoisValidation();
+    $moisASelectionner = $_COOKIE['mois'];    
+    $lesVisiteurs = $pdo->getListeVisiteur($lesMois[0]['mois']);
+    $visiteurASelectionner = $_COOKIE['id'];
+    
+    $pdo->supprimerFraisForfait($idVisiteur, $mois);
+            
+    $lesFraisForfait = $pdo->getLesFraisForfait($visiteurASelectionner, $moisASelectionner);
+    $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($visiteurASelectionner, $moisASelectionner);  
+    include 'vues/v_listeVisiteurMois.php';
+    include 'vues/v_listeFraisForfait.php';    
+    include 'vues/v_validFraisHorsForfait.php';
+    
+    break;
+    
 // Validation d'une fiche de frais    
 case 'validerFiche': 
-    $pdo->majEtatFicheFrais($idVisiteur, $mois, 'VA');
+    $lesMois = $pdo->getListeMoisValidation();
+    $moisASelectionner = $_COOKIE['mois'];    
+    $lesVisiteurs = $pdo->getListeVisiteur($lesMois[0]['mois']);
+    $visiteurASelectionner = $_COOKIE['id'];
+    
+    $pdo->majEtatFicheFrais($visiteurASelectionner, $moisASelectionner, 'VA');
+    $lesFraisForfait = $pdo->getLesFraisForfait($visiteurASelectionner, $moisASelectionner);
+    $lesFraisHorsForfait = $pdo->getLesFraisHorsForfait($visiteurASelectionner, $moisASelectionner);  
+    include 'vues/v_listeVisiteurMois.php';
+    include 'vues/v_listeFraisForfait.php';    
+    include 'vues/v_validFraisHorsForfait.php';
     break;
 }
